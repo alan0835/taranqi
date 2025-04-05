@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { allNews, getNewsByCategory, NewsCategory } from '@/data/newsData';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -10,7 +10,8 @@ import NewsCard from '@/components/news/NewsCard';
 // 每页显示的新闻数量
 const ITEMS_PER_PAGE = 9;
 
-export default function NewsPage() {
+// 创建一个使用 useSearchParams 的客户端组件
+function NewsContent() {
   const searchParams = useSearchParams();
   
   // 使用状态管理分类和页码
@@ -128,5 +129,14 @@ export default function NewsPage() {
         currentPage={safePage}
       />
     </div>
+  );
+}
+
+// 使用 Suspense 包裹的主页面组件
+export default function NewsPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-8 text-center">加载中...</div>}>
+      <NewsContent />
+    </Suspense>
   );
 } 

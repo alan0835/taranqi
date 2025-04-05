@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { allTeachers, getAllDepartments, getAllTitles, TeacherDepartment, TeacherTitle } from '@/data/teachersData';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
-export default function TeachersPage() {
+// 使用 useSearchParams 的客户端组件
+function TeachersContent() {
   const searchParams = useSearchParams();
   const [departmentParam, setDepartmentParam] = useState<TeacherDepartment | undefined>(undefined);
   const [titleParam, setTitleParam] = useState<TeacherTitle | undefined>(undefined);
@@ -248,127 +249,44 @@ export default function TeachersPage() {
                 <div className="flex p-4">
                   <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
-                      src={teacher.avatar}
+                      src={teacher.avatar || '/images/avatar-placeholder.jpg'}
                       alt={teacher.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover rounded-full"
                     />
-                    {teacher.title === '特级教师' && (
-                      <div className="absolute -top-1 -right-1 bg-yellow-500 text-white text-xs px-1 py-0.5 rounded">
-                        特级
-                      </div>
-                    )}
                   </div>
-                  <div className="ml-4 flex-1">
-                    <h2 className="text-xl font-bold">{teacher.name}</h2>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                        {teacher.department}
-                      </span>
-                      <span className="text-sm bg-gray-100 text-gray-800 px-2 py-0.5 rounded">
-                        {teacher.title}
-                      </span>
-                      {teacher.position && (
-                        <span className="text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded">
-                          {teacher.position}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-600">{teacher.education} · {teacher.major}</p>
-                    <p className="text-sm text-gray-600">教龄: {teacher.teachingYears}年</p>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-800">{teacher.name}</h3>
+                    <p className="text-gray-600">{teacher.title}</p>
+                    <p className="text-sm text-gray-500">{teacher.department}</p>
                   </div>
                 </div>
                 <div className="px-4 pb-4">
-                  <p className="text-gray-600 line-clamp-2 text-sm">
-                    {teacher.introduction}
-                  </p>
-                  <div className="mt-3 flex justify-between items-center">
-                    <div>
-                      {teacher.researchFields && (
-                        <div className="flex flex-wrap gap-1">
-                          {teacher.researchFields.slice(0, 2).map((field, index) => (
-                            <span key={index} className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
-                              {field}
-                            </span>
-                          ))}
-                          {teacher.researchFields.length > 2 && (
-                            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
-                              +{teacher.researchFields.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
-                      详细介绍
-                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </span>
-                  </div>
+                  <p className="text-gray-600 line-clamp-2 text-sm">{teacher.introduction}</p>
                 </div>
               </div>
             </Link>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div className="text-center py-12 bg-white rounded-lg shadow-md">
+          <svg className="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">未找到符合条件的教师</h3>
-          <p className="text-gray-600 mb-4">请尝试调整筛选条件或搜索关键词</p>
-          <Link
-            href="/teachers"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800"
-          >
-            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            查看所有教师
-          </Link>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">未找到符合条件的教师</h3>
+          <p className="mt-1 text-gray-500">请尝试调整筛选条件</p>
         </div>
       )}
-      
-      {/* 团队文化 */}
-      <div className="mt-12 bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">我们的团队文化</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4">
-            <div className="bg-blue-100 text-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-3">专业引领</h3>
-            <p className="text-gray-600">
-              我们的教师团队始终保持专业学习的热情，不断更新教育理念，提升教学能力，引领教育教学改革创新。
-            </p>
-          </div>
-          <div className="text-center p-4">
-            <div className="bg-green-100 text-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-3">关爱学生</h3>
-            <p className="text-gray-600">
-              我们的教师秉持"以学生为中心"的理念，关注每个学生的成长需求，尊重个体差异，因材施教，帮助学生全面发展。
-            </p>
-          </div>
-          <div className="text-center p-4">
-            <div className="bg-purple-100 text-purple-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-3">团队协作</h3>
-            <p className="text-gray-600">
-              我们鼓励教师间的经验分享与合作，通过集体备课、教研活动和跨学科合作，打造高效协作的教学团队文化。
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
+  );
+}
+
+// 使用 Suspense 包裹的主页面组件
+export default function TeachersPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-8 text-center">加载中...</div>}>
+      <TeachersContent />
+    </Suspense>
   );
 } 

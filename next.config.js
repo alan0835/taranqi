@@ -48,9 +48,6 @@ const nextConfig = {
   // 配置静态生成参数
   staticPageGenerationTimeout: 120, // 增加超时时间到120秒
   
-  // 配置增量静态再生
-  staticPageGenerationMode: 'incremental',  // 使用增量模式生成静态页面
-  
   // 忽略特定控制台警告
   onDemandEntries: {
     // 每页缓存时间（单位：秒）
