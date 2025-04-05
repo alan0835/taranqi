@@ -5,6 +5,7 @@ import { allTeachers, getAllDepartments, getAllTitles, TeacherDepartment, Teache
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import TeacherAvatar from '@/components/TeacherAvatar';
 
 // 使用 useSearchParams 的客户端组件
 function TeachersContent() {
@@ -248,12 +249,10 @@ function TeachersContent() {
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="flex p-4">
                   <div className="relative w-24 h-24 flex-shrink-0">
-                    <Image
+                    <TeacherAvatar 
                       src={teacher.avatar || '/images/avatar-placeholder.jpg'}
                       alt={teacher.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover rounded-full"
+                      department={teacher.department}
                     />
                   </div>
                   <div className="ml-4">

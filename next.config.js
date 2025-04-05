@@ -26,6 +26,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://webapi.amap.com https://restapi.amap.com https://*.amap.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.amap.com; connect-src 'self' https://*.amap.com https://restapi.amap.com; frame-src 'self' https://*.amap.com;",
           },
+          // 添加缓存控制头，确保浏览器不会过度缓存
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, must-revalidate',
+          },
         ],
       },
     ];
@@ -34,6 +39,11 @@ const nextConfig = {
   // 配置外部图片域名
   images: {
     domains: ['webapi.amap.com', 'restapi.amap.com'],
+    // 添加更多图片优化配置，确保生产环境正确加载图片
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp'],
+    minimumCacheTTL: 60,
   },
   
   // 确保Next.js不预渲染客户端组件
@@ -43,6 +53,8 @@ const nextConfig = {
     },
     // 启用运行时JS优化
     optimizePackageImports: ['react-icons'],
+    // 添加试验性渲染模式，确保客户端组件正确渲染
+    serverComponentsExternalPackages: [],
   },
 
   // 配置静态生成参数
@@ -66,6 +78,10 @@ const nextConfig = {
   
   // 加快构建
   swcMinify: true,
+  
+  // 增加一致性配置
+  poweredByHeader: false,
+  compress: true,
 };
 
 module.exports = nextConfig;
