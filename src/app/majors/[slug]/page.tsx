@@ -316,4 +316,4 @@ export default function MajorDetailPage({ params }: MajorDetailPageProps) {
       </div>
     </div>
   );
-} 
+}
