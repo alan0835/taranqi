@@ -1,0 +1,63 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  
+  // 配置webpack，优化动态导入
+  webpack: (config, { isServer }) => {
+    // 优化处理客户端组件
+    if (!isServer) {
+      // 检查对象路径是否存在，避免 "Cannot set properties of undefined" 错误
+      if (config.optimization && config.optimization.splitChunks) {
+        if (!config.optimization.splitChunks.cacheGroups) {
+          config.optimization.splitChunks.cacheGroups = {};
+        }
+        if (!config.optimization.splitChunks.cacheGroups.commons) {
+          config.optimization.splitChunks.cacheGroups.commons = {};
+        }
+        config.optimization.splitChunks.cacheGroups.commons.minChunks = 2;
+      }
+    }
+    
+    return config;
+  },
+  
+  // 配置外部脚本域名
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://webapi.amap.com https://restapi.amap.com https://*.amap.com; worker-src blob: 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.amap.com; connect-src 'self' https://*.amap.com https://restapi.amap.com; frame-src 'self' https://*.amap.com;",
+          },
+        ],
+      },
+    ];
+  },
+  
+  // 配置外部图片域名
+  images: {
+    domains: ['webapi.amap.com', 'restapi.amap.com'],
+  },
+  
+  // 确保Next.js不预渲染客户端组件
+  experimental: {
+    serverActions: true,
+  },
+
+  // 忽略特定控制台警告
+  onDemandEntries: {
+    // 每页缓存时间（单位：秒）
+    maxInactiveAge: 25 * 1000,
+    // 最大页面数
+    pagesBufferLength: 2,
+  },
+  
+  // 修改日志级别来忽略特定警告
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+};
+
+module.exports = nextConfig;
