@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AlertProvider } from "@/contexts/AlertContext";
+import EnvironmentDebug from '@/components/EnvironmentDebug';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,9 +27,12 @@ export default function Layout({
         className={`${inter.variable} antialiased min-h-screen flex flex-col`}
       >
         <AlertProvider>
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+          <EnvironmentDebug />
         </AlertProvider>
       </body>
     </html>
