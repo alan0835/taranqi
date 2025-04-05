@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import MajorConsultantWrapper from '@/components/majors/MajorConsultantWrapper';
 
+// 使用客户端渲染而不是静态生成
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: '专业咨询助手 - 建设中学',
   description: '基于深度学习技术的智能专业咨询助手，为您提供高考专业选择、院校推荐、职业规划等服务',

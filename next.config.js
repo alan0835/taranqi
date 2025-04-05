@@ -41,8 +41,16 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000']
     },
+    // 启用运行时JS优化
+    optimizePackageImports: ['react-icons'],
   },
 
+  // 配置静态生成参数
+  staticPageGenerationTimeout: 120, // 增加超时时间到120秒
+  
+  // 配置增量静态再生
+  staticPageGenerationMode: 'incremental',  // 使用增量模式生成静态页面
+  
   // 忽略特定控制台警告
   onDemandEntries: {
     // 每页缓存时间（单位：秒）
@@ -51,10 +59,16 @@ const nextConfig = {
     pagesBufferLength: 2,
   },
   
+  // 关闭源码映射以加快构建速度
+  productionBrowserSourceMaps: false,
+  
   // 修改日志级别来忽略特定警告
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
+  // 加快构建
+  swcMinify: true,
 };
 
 module.exports = nextConfig;

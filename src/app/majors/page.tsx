@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: '建设中学提供的大学专业介绍和选择指南，帮助学生了解各专业的培养目标、课程设置和就业方向',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // 每小时重新验证一次
+
 export default function MajorsPage({
   searchParams,
 }: {

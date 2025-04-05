@@ -1,16 +1,21 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { getMajorBySlug, getRelatedMajors, allMajors } from '@/data/majorsData';
 import { notFound } from 'next/navigation';
 import MajorCard from '@/components/majors/MajorCard';
 import TopUniversitiesSection from '@/components/majors/TopUniversitiesSection';
+import MajorImage from '@/components/majors/MajorImage';
 
 interface MajorDetailPageProps {
   params: {
     slug: string;
   };
 }
+
+// 使用增量静态再生(ISR)来确保页面能够在超时前完成生成
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+export const revalidate = 3600; // 每小时重新验证一次
 
 // 动态生成页面元数据
 export function generateMetadata({ params }: MajorDetailPageProps): Metadata {
@@ -31,8 +36,8 @@ export function generateMetadata({ params }: MajorDetailPageProps): Metadata {
 
 // 生成静态路径参数 - 限制数量避免超时
 export function generateStaticParams() {
-  // 仅为前10个专业生成静态页面，其余将按需生成
-  return allMajors.slice(0, 10).map((major) => ({
+  // 仅为前3个专业生成静态页面，其余将按需生成
+  return allMajors.slice(0, 3).map((major) => ({
     slug: major.slug,
   }));
 }
@@ -109,16 +114,10 @@ export default function MajorDetailPage({ params }: MajorDetailPageProps) {
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="md:flex">
             <div className="md:w-1/3 relative h-64 md:h-auto">
-              <Image
-                src={`/majors/${major.slug}.jpg`}
-                alt={major.name}
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  // 图片加载失败时使用备用图片
-                  const target = e.target as HTMLImageElement;
-                  target.src = `/majors/${major.category.toLowerCase().replace(/\s+/g, '-')}.jpg`;
-                }}
+              <MajorImage 
+                slug={major.slug} 
+                name={major.name} 
+                category={major.category} 
               />
             </div>
             
